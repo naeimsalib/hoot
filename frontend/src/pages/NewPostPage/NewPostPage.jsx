@@ -1,17 +1,16 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
-import * as postService from '../../services/postService';
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import * as hootService from "../../services/hootService"; // ✅ Change from postService to hootService
 
 export default function NewPostPage() {
-  const [content, setContent] = useState('');
-
+  const [content, setContent] = useState("");
   const navigate = useNavigate();
 
   async function handleSubmit(evt) {
     evt.preventDefault();
     try {
-      const post = await postService.create(content);
-      navigate('/posts');
+      const hoot = await hootService.create({ text: content }); // ✅ Ensure correct payload
+      navigate("/posts");
     } catch (err) {
       console.log(err);
     }
