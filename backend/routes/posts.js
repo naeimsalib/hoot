@@ -1,12 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const postsCtrl = require('../controllers/posts');
+const hootsCtrl = require('../controllers/posts'); // Now referring to hoots controller
+const ensureLoggedIn = require('../middleware/ensureLoggedIn');
 
-// All paths start with '/api/posts'
+// CRUD routes for hoots
+router.post('/', ensureLoggedIn, hootsCtrl.create); // Create hoot
+router.get('/', hootsCtrl.index); // Get all hoots
+router.get('/:hootId', hootsCtrl.show); // Get a single hoot
+router.put('/:hootId', ensureLoggedIn, hootsCtrl.update); // Update hoot
+router.delete('/:hootId', ensureLoggedIn, hootsCtrl.deleteHoot); // Delete hoot
 
-// POST /api/posts
-router.post('/', postsCtrl.create);
-// // POST /api/auth/login
-// router.post('/login', authCtrl.logIn);
+// Comments route
+router.post('/:hootId/comments', ensureLoggedIn, hootsCtrl.createComment); // Add comment to hoot
 
 module.exports = router;
