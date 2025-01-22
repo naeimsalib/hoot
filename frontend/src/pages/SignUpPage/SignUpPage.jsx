@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import * as authService from '../../services/authService';
+
 export default function SignUpPage({ setUser }) {
   const [formData, setFormData] = useState({
     name: '',
@@ -8,6 +10,8 @@ export default function SignUpPage({ setUser }) {
     confirm: '',
   });
   const [errorMsg, setErrorMsg] = useState('');
+
+  const navigate = useNavigate();
 
   function handleChange(evt) {
     setFormData({ ...formData, [evt.target.name]: evt.target.value });
@@ -19,6 +23,7 @@ export default function SignUpPage({ setUser }) {
     try {
       const user = await authService.signUp(formData);
       setUser(user);
+      navigate('/posts');
     } catch (err) {
       console.log(err);
       setErrorMsg('Sign Up Failed - Try Again');
