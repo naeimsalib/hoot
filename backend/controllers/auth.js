@@ -4,17 +4,19 @@ const User = require('../models/user');
 
 module.exports = {
   signUp,
-  logIn
+  logIn,
 };
 
 async function logIn(req, res) {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ username: req.body.username }); // ✅ Fix field name
     if (!user) throw new Error();
-    const match = await bcrypt.compare(req.body.password, user.password);
+
+    const match = await bcrypt.compare(req.body.password, user.hashedPassword); // ✅ Fix field name
     if (!match) throw new Error();
+
     const token = createJWT(user);
-    res.json(token);
+    res.json({ token });
   } catch (err) {
     console.log(err);
     res.status(400).json({ message: 'Bad Credentials' });
@@ -23,23 +25,24 @@ async function logIn(req, res) {
 
 async function signUp(req, res) {
   try {
-    const user = await User.create(req.body);
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const user = await User.create({
+      username: req.body.username,
+      hashedPassword,
+    });
+
     const token = createJWT(user);
-    res.json(token);
+    res.status(201).json({ token });
   } catch (err) {
     console.log(err);
-    res.status(400).json({ message: 'Duplicate Email' });
+    res.status(400).json({ message: 'Sign-up Failed' });
   }
 }
 
-
-
-/*--- Help Functions ---*/
-
+/*--- Helper Function ---*/
 function createJWT(user) {
   return jwt.sign(
-    // data payload
-    { user },
+    { userId: user._id, username: user.username },
     process.env.SECRET,
     { expiresIn: '24h' }
   );

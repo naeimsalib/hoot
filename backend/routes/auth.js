@@ -5,8 +5,8 @@ const authCtrl = require('../controllers/auth');
 // All paths start with '/api/auth'
 
 // POST /api/auth/signup
-router.post('/signup', authCtrl.signUp);
+router.post('/sign-up', authCtrl.signUp);
 // POST /api/auth/login
-router.post('/login', authCtrl.logIn);
+router.post('/log-in', authCtrl.logIn);
 
 module.exports = router;
